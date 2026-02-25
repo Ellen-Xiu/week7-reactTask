@@ -1,8 +1,8 @@
 import { useEffect, useState, useRef } from 'react'
 import * as bootstrap from 'bootstrap'
-import { fetchProducts, setAuthToken, checkLoginApi } from '../../utils/api';
+import { fetchProducts } from '../../utils/api';
 import ProductList from '../../views/productList';
-import ProductModal from '../../components/productModal';
+import ProductModal from '../../components/ProductModal';
 import Pagination from '../../components/Pagination';
 //import { useDispatch } from 'react-redux';
 //import { createAsyncMessage } from '../../slice/messageSlice';
@@ -25,7 +25,7 @@ const initailTempProduct = {
 };
 function AdminProducts() {
 
-  const [isAuth, setIsAuth] = useState(false);
+  //const [isAuth, setIsAuth] = useState(false);
   const [products, setProducts] = useState([]);
   const [tempProduct, setTempProduct] = useState(initailTempProduct);
   const [modalType, setModalType] = useState('');
@@ -47,30 +47,34 @@ function AdminProducts() {
       showError(error.response.data.message);
     }
   }
-  useEffect(() => {
-    const token = document.cookie
-    .split("; ")
-    .find((row) => row.startsWith("userToken="))
-    ?.split("=")[1];
-    //確定取得tokon後才將token放到header
-    if(token) {
-      setAuthToken(token);
-      //處理登入驗證
-      const checkLogin = async() => {
-        try {
-          await checkLoginApi();
-          //console.log(response);
-          //驗證成功後要做的事:畫面狀態改為登入、取得產品
-          setIsAuth(true);
-          getProducts();
-        } catch (error) {
-          //console.log(error);
-          alert(`登入失敗訊息:${error.response?.data.message}`);
-        }
-      }    
-      checkLogin(); //呼叫函式驗證登入      
-    }
 
+  //checkLogin 驗證已在ProtectedRoute 路由有驗證過，故可以拿掉
+  useEffect(() => {
+    // const token = document.cookie
+    // .split("; ")
+    // .find((row) => row.startsWith("userToken="))
+    // ?.split("=")[1];
+    // //確定取得tokon後才將token放到header
+    // if(token) {
+    //   setAuthToken(token);
+    //   //處理登入驗證
+    //   const checkLogin = async() => {
+    //     try {
+    //       await checkLoginApi();
+    //       //console.log(response);
+    //       //驗證成功後要做的事:畫面狀態改為登入、取得產品
+    //       setIsAuth(true);
+    //       getProducts();
+    //     } catch (error) {
+    //       //console.log(error);
+    //       alert(`登入失敗訊息:${error.response?.data.message}`);
+    //     }
+    //   }    
+    //   checkLogin(); //呼叫函式驗證登入      
+    // }
+
+
+    (async() => await getProducts())();
     //畫面好後才做綁modal DoM元素
     productModalRef.current = new bootstrap.Modal("#productModal", {
       keyboard: false,
