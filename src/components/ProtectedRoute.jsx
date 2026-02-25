@@ -2,11 +2,13 @@ import { useState, useEffect } from "react";
 import { setAuthToken, checkLoginApi } from '../utils/api';
 import { RotatingLines } from "react-loader-spinner";
 import { Navigate } from "react-router";
+import useMessage from "../hooks/useMessage";
 
 //checkLogin相關內容移入ProtectedRoute元件
 function ProtectedRoute({children}) {   //路由守衛通過檢查後才會顯示後台頁面
   const [isAuth, setIsAuth] = useState(false);
   const [loading, setLoading] = useState(true);   //API回傳需要時間，故加入載入的樣式
+  const {showError} = useMessage();
 
   useEffect(() => {
     const token = document.cookie
@@ -29,7 +31,7 @@ function ProtectedRoute({children}) {   //路由守衛通過檢查後才會顯�
           setIsAuth(true);
         } catch (error) {
           //console.log(error);
-          alert(`登入失敗訊息:${error.response?.data.message}`);
+          showError(`登入失敗訊息:${error.response?.data.message}`);
         } finally {
           setLoading(false);
         }
