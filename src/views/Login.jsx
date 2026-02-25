@@ -1,29 +1,31 @@
-import { useState } from 'react'
+//import { useState } from 'react'
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { emailValidation, passwordValidation } from '../utils/validation';
 import { useNavigate } from 'react-router';
+import useMessage from '../hooks/useMessage';
 
 
 
 const API_BASE = import.meta.env.VITE_API_BASE;
 const API_PATH = import.meta.env.VITE_API_PATH;
-function Login({getProducts, setIsAuth}){
+function Login(){
   const navigate = useNavigate();     //使用useNavigate作路由切換
-  const [formData, setFormData] = useState({
-    username: '',
-    password: ''
-  })
+  const {showError} = useMessage();
+  // const [formData, setFormData] = useState({
+  //   username: '',
+  //   password: ''
+  // })
   const {register, handleSubmit, formState: {errors, isValid}} = useForm({
     mode: 'onChange'
   });
-  const handleInputChage = (e) => {
-    const {name, value} = e.target;
-    //console.log(name, value);
-    setFormData((preData) => ({
-      ...preData, [name]:value,
-    }))
-  }  
+  // const handleInputChage = (e) => {
+  //   const {name, value} = e.target;
+  //   //console.log(name, value);
+  //   setFormData((preData) => ({
+  //     ...preData, [name]:value,
+  //   }))
+  // }  
   //處理登入
   const onSubmit = async(formData) => {
     try {
@@ -40,8 +42,8 @@ function Login({getProducts, setIsAuth}){
       //setIsAuth(true);
       //getProducts();  //登入就會取得產品列表，故需呼叫getProducts
     } catch (error) {
-      setIsAuth(false);
-      alert(`登入失敗訊息:${error.response.data.error.message}`);
+      //setIsAuth(false);
+      showError(`登入失敗訊息:${error.response.data.error.message}`) 
     }
   }    
   return (
@@ -59,7 +61,7 @@ function Login({getProducts, setIsAuth}){
             //required
             {...register('username', emailValidation )}            
           />
-          <label htmlFor="floatingInput">Email address</label>
+          <label htmlFor="email">Email address</label>
           {errors.username && <p className='text-danger'>{errors.username.message}</p>}
         </div>
         <div className="form-floating">
@@ -74,7 +76,7 @@ function Login({getProducts, setIsAuth}){
             //required
             {...register('password', passwordValidation)}
           />
-          <label htmlFor="floatingPassword">Password</label>
+          <label htmlFor="password">Password</label>
           {errors.password && <p className='text-danger'>{errors.password.message}</p>}
         </div>
         <button type="submit" className='btn btn-primary mt-3 w-100' disabled={!isValid}>登入</button>        
