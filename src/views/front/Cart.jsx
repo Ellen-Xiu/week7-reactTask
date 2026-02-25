@@ -32,7 +32,7 @@ function Cart({isCheckout=false}) {
   const getCart = async() =>{
     try {
       const response = await axios.get(`${API_BASE}/api/${API_PATH}/cart`);
-      console.log(response.data.data);
+      //console.log(response.data.data);
       setCart(response.data.data);
     } catch (error) {
       alert(error.response.data.message);

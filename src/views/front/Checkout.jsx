@@ -32,7 +32,7 @@ function Checkout() {
   const getProducts = async()=>{
     try {
       const response = await axios.get(`${API_BASE}/api/${API_PATH}/products`);
-      console.log(response.data.products);
+      //console.log(response.data.products);
       setProducts(response.data.products);
     } catch (error) {
       alert(error.response.data.message);
@@ -77,7 +77,7 @@ function Checkout() {
 
   //處理訂單
   const onSubmit = async(formData) => {
-    console.log(formData);
+    //console.log(formData);
     try {
       //處理訂單格式符合api資料格式
       const data = {
