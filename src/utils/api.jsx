@@ -23,6 +23,9 @@ export const setAuthToken = (token) => {
 export const checkLoginApi = () => {
   return api.post(`/api/user/check`);
 }
+export const logoutApi = () => {
+  return api.post(`/logout`);
+}
 
 //modal 處理產品相關api
 //更新產品

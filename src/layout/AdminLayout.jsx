@@ -1,5 +1,21 @@
-import { NavLink, Outlet } from "react-router"
+import { NavLink, Outlet, useNavigate } from "react-router"
+import { logoutApi, setAuthToken } from "../utils/api"
+import useMessage from "../hooks/useMessage";
 function AdminLayout() {
+  const {showSuccess, showError} = useMessage();
+  const navigate = useNavigate()
+  const handleLogout = async(e) =>{
+    e.preventDefault();   //攔截 NavLink 的預設跳轉，由程式碼控制
+    try {
+      await logoutApi();
+      document.cookie = "userToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/week7-reactTask;";    //清除cookie
+      setAuthToken();   //清除 Axios Header記憶體狀態
+      navigate('/login');
+      showSuccess('已成功登出');
+    } catch (error) {
+      showError(error.response.data.message);
+    }
+  }
   return (
     <>
       <header className="bg-warning-subtle">
@@ -11,7 +27,12 @@ function AdminLayout() {
               </li>
               <li className="nav-item">
                 <NavLink className={({isActive}) => { return isActive ? "nav-link text-primary fw-bold" : "nav-link text-success fw-bold"}} to="/admin/order">後台訂單列表</NavLink>
-              </li>
+              </li>              
+            </div>
+            <div>
+              <li className="nav-item">
+                <NavLink className={({isActive}) => { return isActive ? "nav-link text-primary fw-bold" : "nav-link text-success fw-bold"}} to="/login" onClick={handleLogout}>登出</NavLink>
+              </li>              
             </div>
           </ul>
         </div>
