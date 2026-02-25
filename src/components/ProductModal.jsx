@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createProductApi, updateProductApi, delProductApi, uploadImgApi} from "../utils/api";
 import { useDispatch } from "react-redux";
 import { createAsyncMessage } from "../slice/messageSlice";
+import useMessage from "../hooks/useMessage";
 
 function ProductModal({
   modalType,
@@ -12,6 +13,8 @@ function ProductModal({
   //setTempProduct避免汙染原始元件，故會在當下自己元件內建立，將原本setTempProduct改為setTempData以及tempProduct改為tempData
   const [tempData, setTempData] = useState(tempProduct);
   const dispatch = useDispatch();
+  const fileInputRef = useRef();
+  const {showError} = useMessage();
   //每次變更後須重新設定setTempData
   useEffect(() => {
     setTempData(tempProduct);
@@ -96,7 +99,7 @@ function ProductModal({
       getProducts();
       closeModal();
     } catch (error) {
-      alert(`新增產品失敗訊息: ${error.response.data.message}`);
+      showError(`新增產品失敗訊息: ${error.response.data.message}`);
     }
   }  
     //刪除產品
@@ -107,14 +110,14 @@ function ProductModal({
       getProducts();
       closeModal();
     } catch (error) {
-      alert(`刪除失敗訊息: ${error.response.data.message}`);
+      showError(`刪除失敗訊息: ${error.response.data.message}`);
     }    
   }
 
   const uploadImg = async(e) => {
     const file = e.target.files?.[0];
     if(!file) {
-      return console.log('沒有上傳的檔案');
+      return showError('沒有上傳的檔案');
     }
     //console.log(e);
     try {
@@ -127,8 +130,13 @@ function ProductModal({
         ...pre,
         imageUrl: response.data.imageUrl,
       }))
+
+      //清空input的輸入內容
+      if(fileInputRef.current){
+        fileInputRef.current.value = ""
+      }
     } catch (error) {
-      alert(error.response.data.message)
+      showError(error.response.data.message)
     }
   }
   return (<div className="modal fade" id="productModal" tabIndex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
@@ -147,7 +155,8 @@ function ProductModal({
                       上傳圖片
                     </label>
                     <input className="form-control" 
-                    type="file" 
+                    type="file"
+                    ref={fileInputRef}
                     name="fileUpload" 
                     id="fileUpload"
                     accept=".jpg, .jpeg, .png"
